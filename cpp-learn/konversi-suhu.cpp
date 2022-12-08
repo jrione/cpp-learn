@@ -1,10 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <map>
-#include <algorithm>
-#include <sstream>
-#include <iterator>
-#include <cstring>
+#include <iomanip>
 
 using namespace std;
 
@@ -12,51 +7,40 @@ using namespace std;
 bool setFail;
 string unit[] = { "C","R","F","K" };
 
-string implode(vector<string> strings, string delim) {
-    stringstream ss;
-    copy(strings.begin(), strings.end(),
-        ostream_iterator<string>(ss, delim.c_str()));
-    return ss.str();
-}
-
-
-void convert(int nominal,string fromScale, string toScale) {
-    string FromTo = implode({ fromScale, toScale}, "_");
-    string ToFrom = implode({ toScale, fromScale }, "_");
-    map<string, map<string, int> > rumus;
-
-
-    for (int j = 0; j < sizeof(unit)/sizeof(unit[0]); j++) { //baris CRFK
-        rumus[unit[j]];
-        for (int k = 0; k < sizeof(unit) / sizeof(unit[0]); k++) { //kolom cc,cr,cf,ck,dsb
-            if (fromScale == toScale) {
-                rumus[fromScale][FromTo] = nominal;
-            }
-            else {
-                rumus[unit[j]][implode({ unit[j], unit[k]}, "_")];
-            }
-        }
-        for (auto a : rumus[unit[j]]) {
-            if (a.first == FromTo || a.first == ToFrom) {
-                cout << a.first <<": "<<a.second<< endl;
-            }
-        }
+float convert(int nominal,string fromScale, string toScale) {
+    float hasil = 0.69;
+    float pengkali = 1.0;
+    if (fromScale == toScale) {
+        hasil = nominal;
+    }
+    else if (fromScale == "C") {
+        toScale == "R" ? hasil = pengkali*nominal * 4 / 5 : hasil;
+        toScale == "F" ? hasil = (pengkali*nominal * 9/5) + 32: hasil;
+        toScale == "K" ? hasil = pengkali*nominal+273 : hasil;
+    }
+    else if (fromScale == "R") {
+        toScale == "C" ? hasil = pengkali*nominal * 5 / 4 : hasil;
+        toScale == "F" ? hasil = (pengkali*nominal * 9 / 4) + 32 : hasil;
+        toScale == "K" ? hasil = pengkali*nominal * 5 / 4 + 273 : hasil;
+    }
+    else if (fromScale == "F") {
+        toScale == "C" ? hasil = (nominal * 5 / 9) - 32 : hasil;
+        toScale == "R" ? hasil = (nominal * 4 / 9) - 32 : hasil;
+        toScale == "K" ? hasil = (nominal * 5 / 9) + 459.4 : hasil;
+    }
+    else if (fromScale == "K") {
+        toScale == "C" ? hasil = pengkali*nominal + 273 : hasil;
+        toScale == "R" ? hasil = (pengkali*nominal * 4 / 5) - 273 : hasil;
+        toScale == "F" ? hasil = (pengkali*nominal * 9 / 5) - 459.4 : hasil;
+    }
+    else {
+        hasil = 0;
     }
 
+    return hasil;
     
-
-   /* for (int m = 0; m < sizeof(unit) / sizeof(unit[0]); m++) {
-        for (auto l : rumus[unit[m]]) cout << '{' << l.first << ", " << l.second << "}\n";
-    }
-    */
-    //string sumScale =  implode(FromTo, "_");
-    //return rumus[sumScale];
-
-    /*{"C_R_", nominal * 4 / 5},
-    { "R_R_", nominal },
-    { "F_R_", (nominal - 32) * 4 / 9 },
-    { "K_R_", (nominal - 273) * 4 / 5 }*/
 }
+
 
 
  void menu() {
@@ -81,22 +65,19 @@ void convert(int nominal,string fromScale, string toScale) {
             for (char chara : allScale[i]) allScale[i] = toupper(chara);
             exist[i] = find(begin(unit), end(unit), allScale[i]) != end(unit);
         }
-
-    }
-    convert(nominalSuhu, allScale[0], allScale[1]);
-
-
-       /* if (exist[0] == true && exist[1] == true) {
-            float sum;
-            sum = convert(nominalSuhu, allScale[0], allScale[1]);
+        if (exist[0] == true && exist[1] == true) {
+            float sum = convert(nominalSuhu, allScale[0], allScale[1]);
             cout << "============================================" << endl;
-            cout << "Konversi suhu " << allScale[0] << " ke " << allScale[1] << " = " << sum << endl;
+            cout << "Konversi suhu " << allScale[0] << " ke " << allScale[1] << " = "<< sum << endl;
             setFail = false;
         }
         else {
             cout << "Masukkan input sesuai INGFO!";
             setFail = true;
-        }*/
+        }
+
+    }
+   
 }
 
 int main() {
